@@ -26,5 +26,3 @@ steps:
 - name: validate terraform configuration
   run: terraform validate
 
-- name: plan terraform changes
-  run: terraform plan
