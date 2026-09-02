@@ -1,0 +1,70 @@
+# name: terraform basic workflow
+
+# on: 
+#     push:
+#     bracches:
+#       - main
+
+# jobs: 
+#   terraform:
+#     runs-on: ubuntu-latest
+
+
+# steps: 
+# - name: Checkout code
+#   uses: actions/checkout@v4
+
+# - name: setup terraform
+#   uses: hasicorp/setup-terraform@v3
+
+# - name: check terraform formatting
+#   run: terraform fmt -check - recursive
+
+# - name: initialize terraform 
+#   run: terraform init
+
+# - name: validate terraform configuration
+#   run: terraform validate
+
+
+
+name: terraform-CI
+
+permissions:
+    contents: read
+
+jobs: 
+    terraform-ci:
+        runs-on: ubuntu-latest
+
+        steps: 
+            - name: checkout repository
+              uses: actions/checkout@v4
+
+            - name: setup terraform  
+              uses: hashicorp/setup-terraform@v3
+
+            - name: check terraform formatting
+              run: terraform fmt -check -recursive
+
+            - name: initializing terraform
+              run: terraform init
+
+            - name: validate terraform configuration
+              run: terraform validate
+
+            - name:  generate terraform plan 
+              run: terraform plan -out=tfplan
+
+            - name: convert plan to readable text 
+              run:  terraform show -no-color tfplan > tfplan.txt
+
+            - name: upload teraform plan artifact
+              uses: actions/upload-artifact@v4
+              with:
+                name: terraform-plan
+                path: tfplan.txt
+on: 
+    push:
+        branches:
+            - main 
